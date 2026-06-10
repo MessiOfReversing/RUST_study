@@ -1,0 +1,17 @@
+fn main() {
+    println!("Hello World!");
+}
+
+
+/* 입력 */
+
+fn main() {
+    println!("Hello World!\nI'm a Rustacean!");
+}
+
+/* 결과
+
+Hello World!
+I'm a Rustacean!
+*/
+
