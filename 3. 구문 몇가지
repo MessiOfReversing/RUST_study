@@ -1,0 +1,162 @@
+format!서식이 지정된 텍스트를 작성합니다.String
+print!: 동일 format!, 그리고 텍스트가 콘솔(io::stdout)에 출력됩니다.
+println!: 와 동일 print!, 그리고는 줄 바꿈 문자가 추가됩니다.
+eprint!: 동일 print!, 그리고 텍스트가 표준 오류(io::stderr)로 출력됩니다.
+eprintln!: 와 동일 eprint!, 그리고 줄 바꿈 문자가 추가됩니다.
+
+
+
+fn main() {
+    // In general, the `{}` will be automatically replaced with any
+    // arguments. These will be stringified.
+    println!("{} days", 31);
+
+    // Positional arguments can be used. Specifying an integer inside `{}`
+    // determines which additional argument will be replaced. Arguments start
+    // at 0 immediately after the format string.
+    println!("{0}, this is {1}. {1}, this is {0}", "Alice", "Bob");
+
+    // As can named arguments.
+    println!("{subject} {verb} {object}",
+             object="the lazy dog",
+             subject="the quick brown fox",
+             verb="jumps over");
+
+    // Different formatting can be invoked by specifying the format character
+    // after a `:`. : 는 문자열을 어떻게 다룰건지를 결정함
+    println!("Base 10:               {}",   69420); // 69420
+    println!("Base 2 (binary):       {:b}", 69420); // 뒤의것 : b 니까 binary로 변환. 따라서 10000111100101100
+    println!("Base 8 (octal):        {:o}", 69420); // 207454
+    println!("Base 16 (hexadecimal): {:x}", 69420); // 10f2c
+
+    // You can right-justify text with a specified width. This will
+    // output "    1". (Four white spaces and a "1", for a total width of 5.)
+    println!("{number:>5}", number=1); /* 오른쪽으로 5칸째에서 끝내게 해라.
+    따라서 number가 123이었다면 공백 2칸이었을것. 문자열 길이보다 작게 요구하면 무시하고 처음부터 찍히게됨. */
+
+    // You can pad numbers with extra zeroes,
+    println!("{number:0>5}", number=1); // 00001
+    // and left-adjust by flipping the sign. This will output "10000".
+    println!("{number:0<5}", number=1); // 10000
+
+    /* number=12 인 경우 (왼쪽 공백 1칸 + 숫자 12 + 오른쪽 공백 2칸)
+    결과 : " 12  "
+    */
+
+    // You can use named arguments in the format specifier by appending a `$`.
+    println!("{number:0>width$}", number=1, width=5);
+    /* width로 너비를 동적으로 받기위해 $를 specifier처럼 사용함. */
+
+    // Rust even checks to make sure the correct number of arguments are used.
+    println!("My name is {0}, {1} {0}", "Bond", "James");
+    
+
+    // Only types that implement fmt::Display can be formatted with `{}`. User-
+    // defined types do not implement fmt::Display by default.
+    /* 사용자가 직접 정의한 타입(구조체나 열거형 등)은 기본적으로 fmt::Display 가 구현되어있지 않다는 의미. 
+    
+    숫자(⁠i32⁠), 문자열(⁠String⁠, ⁠&str⁠) 등으로 적혀있으면 읽을수가 있는데
+
+    struct User { name: String, age: u32 }⁠ 같은 구조체는 
+    println!("{}", user); 를 만났을때
+    {}에 ⁠User(홍길동, 20)⁠으로 보여줘야 할지, 홍길동만 적어줄지 알 수가 없음.
+
+    그래서
+
+        use std::fmt;
+
+struct User {
+    name: String,
+    age: u32,
+}
+
+// User 구조체를 위해 {} 출력 규칙(Display)을 직접 정의합니다.
+impl fmt::Display for User {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // 내가 원하는 포맷을 직접 지정 (예: "Alice (20세)")
+        write!(f, "{} ({}세)", self.name, self.age)
+    }
+}
+
+fn main() {
+    let user = User { name: String::from("Alice"), age: 20 };
+    println!("{}", user); // 덧붙인 규칙 덕분에 이제 에러 없이 잘 작동
+    // 출력 결과: Alice (20세)
+}
+
+    }  
+
+    */
+
+    #[allow(dead_code)] // disable `dead_code` which warn against unused module
+    struct Structure(i32);
+
+    /* 
+    •	dead_code는 Rust 컴파일러가 사용되지 않는 코드를 발견하면 경고를 내보내는 lint(코드 검사) 규칙
+	  •	Structure라는 구조체가 정의만 되고 어디서도 사용되지 않으면 보통 경고가 뜨는데, #[allow(dead_code)]를 붙이면 그 경고를 무시하라는 뜻
+    */
+
+    // This will not compile because `Structure` does not implement
+    // fmt::Display.
+    // println!("This struct `{}` won't print...", Structure(3));
+    // TODO ^ Try uncommenting this line
+
+    /*
+
+    use std::fmt;
+
+struct Structure(i32);
+
+impl fmt::Display for Structure {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)  // self.0 은 튜플 구조체의 첫 번째 값
+    }
+}
+
+fn main() {
+    println!("This struct `{}` won't print...", Structure(3));
+    // 출력: This struct `3` won't print...
+}
+
+설명..
+
+impl fmt::Display for Structure
+
+	•	Structure 타입에 대해 “어떻게 출력할지” 직접 정의하는 것. 
+  
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result
+
+	•	반드시 이 시그니처를 그대로 써야 함(트레이트 규칙). 여기까지가 템플릿임.
+
+write!(f, "{}", self.0)
+
+	•	self.0 → 튜플 구조체의 첫 번째 필드 (i32 값)
+	•	이 값을 포맷터 f에 써넣는 것.
+    
+    */
+
+    // For Rust 1.58 and above, you can directly capture the argument from a
+    // surrounding variable. Just like the above, this will output
+    // "    1", 4 white spaces and a "1".
+    let number: f64 = 1.0;
+    let width: usize = 5;
+    println!("{number:>width$}");
+}
+
+
+결과
+
+
+31 days
+Alice, this is Bob. Bob, this is Alice
+the quick brown fox jumps over the lazy dog /* arg에 이름을 붙였기때문에 뒤에서 입력하는 순서는 의미가 없던것 */
+Base 10:               69420
+Base 2 (binary):       10000111100101100
+Base 8 (octal):        207454
+Base 16 (hexadecimal): 10f2c
+    1
+00001
+10000
+00001
+My name is Bond, James Bond
+    1
