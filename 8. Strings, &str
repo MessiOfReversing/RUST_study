@@ -1,0 +1,39 @@
+fn main() {
+//String = Sized type
+//str = dynamic type
+
+    let my_name = "David"; // 이건 &str
+    let other_name = String::from("David2");
+    //growable + shrinkable
+    let mut my_other_name = "David3".to_string();
+    my_other_name.push('!');
+    println!("{}", my_other_name);
+}
+
+
+대답
+
+David3!
+
+슬라이스 알아보기
+
+
+
+fn main() {
+    // 1. &str 타입인 "David"를 수정 가능한 String 타입으로 변환합니다.
+    let mut my_name = "David".to_string(); 
+    
+    // 2. String 타입이 되었기 때문에 뒤에 '!'를 붙이거나 이런저런 추가적인 크기 늘리기도 가능합니다.
+    my_name.push('!'); 
+    
+    println!("My name is {}", my_name); // 출력: My name is David!
+}
+
+
+
+비교
+
+
+
+let mut my_name = "David"; // 타입은 &str
+my_name.push('!'); // ❌ 컴파일 에러 발생! (&str에는 push 메서드가 없습니다.)
