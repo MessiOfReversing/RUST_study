@@ -1,0 +1,192 @@
+// macro = function that writes code
+
+fn main() {
+    let my_name = "David";
+    println!("my name is {}", my_name);
+}
+
+답
+
+my name is David
+
+
+
+
+
+
+나이를 추가하되, function으로 main에서 이용해보자.
+
+
+
+fn give_age() -> i32 { /* function을 쓰면 뭐가 나오느냐? 하고 적는게 -> 뒤쪽임. */
+    42
+}
+
+fn main() {
+    let my_name = "David";
+    println!("my name is {} and my age is {}", my_name, give_age());
+}
+
+답
+
+my name is David and my age is 42
+
+
+
+
+
+
+
+
+fn main() {
+    let my_city = "Seoul";
+    let year = 2002;
+    let population = 9_987_987;
+    println!("the city of {} in {} had a population of {}", my_city, year, population);
+}
+
+답
+
+the city of Seoul in 2002 had a population of 9987987
+
+
+
+순서도 마음대로 설정 가능함
+
+
+fn main() {
+    let my_city = "Seoul";
+    let year = 2002;
+    let population = 9_987_987;
+    println!("the city of {0} in {1} had a population of {2} i love {0}", my_city, year, population);
+}
+
+이렇게. 결과는
+
+
+the city of Seoul in 2002 had a population of 9987987 i love Seoul
+
+
+
+
+그리고
+
+
+
+fn number() -> i32 {
+    8;
+}
+fn main(){
+    let my_number = number();
+}
+
+
+이거 될것도 같은데 안된다. empty tuple 때문인데, 
+
+
+
+fn number() -> i32 {
+    8
+}
+fn main(){
+    let my_number = number();
+    println!("내 숫자를 보여쥬지 {}" , my_number)
+}
+로 수정하면 이제 컴파일도 되고 결과값도 나온다.
+
+답
+
+내 숫자를 보여쥬지 8
+
+; <<< 이건 연산을 끝내고, 결과는 없애버리는 일을 한다.
+할당만 할때는 쓰레기값을 지워야하니 ;를 붙이는게 당연했지만 연산시키거나 지금처럼 8같은 숫자 불러오게 할때는 
+붙였다가는 빈값이 되어버려서 empty tuple이 되어버린다.
+
+따라서 상황 봐가면서 ;쓰자. 마치 malloc후 값을 반환해야하니 결과를 내놓을 메모리는 free를 하지 않는것과
+비슷하다.
+
+
+
+
+
+
+fn give_number(one:i32, two:i32) -> i32 {
+    one * two
+}
+
+fn main() {
+    let my_number = give_number(9, 8);
+    println!("{}", my_number);
+}
+
+
+해도되고
+
+fn give_number(one:i16, two:i16) -> i16 {
+    let multiplied_by_ten = {
+        let first_number = 10;
+        first_number * one * two
+    }; 
+    multiplied_by_ten
+}
+
+fn main() {
+    let my_number = give_number(9, 1);
+    println!("{}", my_number);
+}
+
+해도되고.
+
+둘다 계산결과 숫자만 나옴.
+
+
+
+
+
+
+또 let없이 할당된걸 바꾸려면 mut을 쓴다
+
+fn main() {
+    let mut my_number = 10;
+    my_number = 9;
+}
+
+이렇게.
+
+
+
+그리고 shadowing이란것도 있다.
+
+fn main() {
+    let my_number = 8; // This is an i32
+    println!("{}", my_number); // prints 8
+    {
+        let my_number = 9.2; // my number가 아니고 f64. 실수니까 실수 기본타입인 f64로 컴파일러가 간주함.
+        println!("{}", my_number) // Prints 9.2
+                                  // 쉐도우된건 바로 이 코드블록 내에서만 살아있음
+                                  // The first my_number is still alive!
+    }
+    println!("{}", my_number); // prints 8. 다시 돌아왔으니
+}
+
+
+
+이렇게 각 순간마다 같은 이름을 계속 써서 할당된 값을 바꾸는데 
+
+
+fn double(input:i32) -> i32{
+    input * 2
+}
+
+fn triple(input:i32) -> i32 {
+    input * 3
+}
+
+fn main() {
+    let x = 9;
+    let x = double(x);
+    let x = triple(x);
+    println!("{}" , x);
+}
+
+이렇게 활용 가능하다. 결과는 54  다.
