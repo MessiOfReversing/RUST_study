@@ -1,0 +1,96 @@
+fn main() {
+    let my_number = 15; // This is an i32
+    let single_reference = &my_number; //  This is a &i32
+    let double_reference = &single_reference; // This is a &&i32
+    let five_references = &&&&&my_number; // This is a &&&&&i32
+}
+
+
+참조자는 이정도로..
+
+
+추가로 r#로 시작해서 #로 닫으면 (raw text라고 부름)
+
+fn main() {
+    print!(r#"c:\thisdrive\new_drive"#);
+}
+
+
+결과는
+
+c:\thisdrive\new_drive
+이렇게됨.
+
+
+fn main() {
+    print!("Let me tell you
+    어떤 이야기를
+    봅시다");
+}
+이거는 잘 나올것도 같지만
+
+
+Let me tell you
+    어떤 이야기를
+    봅시다
+
+공백발생
+
+
+fn main() {
+    print!(
+"Let me tell you
+어떤 이야기를
+봅시다");
+}
+이렇게 수정한다면
+
+
+Let me tell you
+어떤 이야기를
+봅시다
+
+완성
+
+
+
+
+fn main() {
+    let my_variable = &9;
+    print!("{:p}", my_variable);
+}
+
+결과 : 0x2340798 << 이런느낌이었음.
+
+p로 위치를 물을 수 있는데 참조자를 이용한다.
+(참조(Reference): 데이터를 복사하지 않고, 원래 데이터가 있는 메모리 주소를 가리켜서 값에 접근.)
+
+
+바이트도 이렇게
+fn main() {
+    let my_variable = 9000;
+    print!("{:b}", my_variable);
+}
+물으면
+
+10001100101000 나옴.
+
+
+
+fn main() {
+    let title = "TODAY'S NEWS";
+    println!("{:-^30}", title); // no variable name, pad with -, put in centre, 30 characters long
+    let bar = "|";
+    println!("{: <15}{: >15}", bar, bar); // no variable name, pad with space, 15 characters each, one to the left, one to the right
+    let a = "SEOUL";
+    let b = "TOKYO";
+    println!("{city1:-<15}{city2:->15}", city1 = a, city2 = b); // variable names city1 and city2, pad with -, one to the left, one to the right
+}
+이러면
+
+
+---------TODAY'S NEWS---------
+|                            |
+SEOUL--------------------TOKYO
+
+완성됨.
