@@ -1,0 +1,41 @@
+fn main() {
+    println!("Size of a char: {}", std::mem::size_of::<char>()); // 4 bytes
+    
+    
+    println!("Size of string containing 'a': {}", "a".len()); // .len() gives the size of the string in bytes
+    println!("Size of string containing 'ß': {}", "ßßßßß".len());
+    println!("Size of string containing '国': {}", "国".len());
+    println!("Size of string containing '𓅱': {}", "𓅱".len());
+}
+
+결과
+
+Standard Output
+Size of a char: 4
+Size of string containing 'a': 1
+Size of string containing 'ß': 10
+Size of string containing '国': 3
+Size of string containing '𓅱': 4
+
+에스체트가 왜 5개인데 len이 10이냐?
+
+rust의 len은 바이트수를 세어주기 때문.
+추가로 한자는 3바이트가 캐릭터 1, 이집트 상형문자는 4바이트가 1캐릭터.
+
+
+
+
+
+
+fn main() {
+    let slice = "Hello!";
+    println!("Slice is {} bytes and also {} characters.", slice.len(), slice.chars().count());
+    let slice2 = "안녕!";
+    println!("Slice2 is {} bytes but only {} characters.", slice2.len(), slice2.chars().count());
+}
+
+
+Slice is 6 bytes and also 6 characters.
+Slice2 is 7 bytes but only 3 characters.
+
+len은 바이트, chars().count()가 정확한 캐릭터단위 수.
